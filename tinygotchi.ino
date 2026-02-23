@@ -51,7 +51,8 @@
 #define TAMA_DISPLAY_FRAMERATE 3  // 3 is optimal for Arduino UNO
 #define ENABLE_AUTO_SAVE_STATUS
 #define AUTO_SAVE_MINUTES 60UL    // Auto save for every hour (to preserve EEPROM lifespan)
-#define ENABLE_LOAD_STATE_FROM_EEPROM
+// #define ENABLE_LOAD_STATE_FROM_EEPROM
+#define EEPROM_MAGIC_NUMBER 12
 /***************************/
 
 U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_R0);
@@ -65,11 +66,11 @@ static unsigned long lastSaveTimestamp = 0;
 /************************************/
 
 static void hal_halt(void) {
-  //Serial.println("Halt!");
+  // Serial.println("Halt!");
 }
 
 static void hal_log(log_level_t level, char *buff, ...) {
-  Serial.println(buff);
+  // Serial.println(buff);
 }
 
 static void hal_sleep_until(timestamp_t ts) {
@@ -203,19 +204,19 @@ void displayTama() {
 #ifdef ENABLE_AUTO_SAVE_STATUS
 void saveStateToEEPROM() {
   int i = 0;
-  if (EEPROM.read(0) != 12) {
+  if (EEPROM.read(0) != EEPROM_MAGIC_NUMBER) {
     // Clear EEPROM
     for (i = 0; i < EEPROM.length(); i++) {
       EEPROM.write(i, 0);
     }
   }
-  EEPROM.update(0, 12);
+  EEPROM.update(0, EEPROM_MAGIC_NUMBER);
   cpu_get_state(&cpuState);
   EEPROM.put(1, cpuState);
   for (i = 0; i < MEMORY_SIZE; i++) {
     EEPROM.update(1 + sizeof(cpu_state_t) + i, cpuState.memory[i]);
   }
-  Serial.println("S");
+  // Serial.println("S");
 }
 #endif
 
@@ -229,12 +230,13 @@ void loadStateFromEEPROM() {
   for (i = 0; i < MEMORY_SIZE; i++) {
     memTemp[i] = EEPROM.read(1 + sizeof(cpu_state_t) + i);
   }
-  Serial.println("L");
+  // Serial.println("L");
 }
 #endif
 
 void setup() {
-  Serial.begin(115200);
+  // Serial.begin(115200);
+
   pinMode(PIN_LEFT, INPUT_PULLUP);
   pinMode(PIN_MIDDLE, INPUT_PULLUP);
   pinMode(PIN_RIGHT, INPUT_PULLUP);
@@ -248,7 +250,7 @@ void setup() {
   tamalib_init(1000000);
 
 #ifdef ENABLE_LOAD_STATE_FROM_EEPROM
-  if (EEPROM.read(0) == 12) {
+  if (EEPROM.read(0) == EEPROM_MAGIC_NUMBER) {
     loadStateFromEEPROM();
   }
 #endif
