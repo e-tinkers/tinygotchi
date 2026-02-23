@@ -9,7 +9,7 @@
 ## Fork Changes and Improvements
 The repo adds a few changes and improvements over the original repo [GaryZ88/ArduinoGotchi](https://github.com/GaryZ88/ArduinoGotchi):
 - `TamaRomConvert` is removed from the repo, `rom_12bit.h` is obtained from another fork [analolyc/Tamagotchi](https://github.com/anabolyc/Tamagotchi).
-- Other changes to be updated soon.
+- [Remove several option Macros](https://github.com/e-tinkers/tinygotchi/commit/3e8c0d33c18567a59c36022a13324c0c2b89b3e8) and related codes to simplify the setup and reduce the unnecessary codes
 
 ## How to build
 
@@ -19,10 +19,11 @@ The repo adds a few changes and improvements over the original repo [GaryZ88/Ard
 - **Arduino IDE** - [Download and Install](https://www.arduino.cc/en/software)
 - **megaTinyCore Arduino Core** - [Download and Install](https://github.com/SpenceKonde/megaTinyCore/tree/master/megaavr)
 - **Hardware**
-  - ATtiny3227
+  - ATtiny3227 or an [ATtiny3227 Dev Board](https://github.com/e-tinkers/attiny3217)
   - Push button x 3
   - Buzzer
   - SSD1306 I2C OLED 128x64
+  - SerialUPDI Programmer - Like [tinyUPDI](https://github.com/techstudio-design/tinyUPDI) or [make one with a USB Serial Adaptor](https://github.com/SpenceKonde/AVR-Guidance/blob/master/UPDI/jtag2updi.md)
   - Custom PCB (To be develop)
 
 ### Compile and Run 
@@ -47,22 +48,13 @@ The repo adds a few changes and improvements over the original repo [GaryZ88/Ard
 - The emulator will save the game status for every x mintues configured by `#define AUTO_SAVE_MINUTES x`.
 - There are a few settings in the main program (**tinyGotchi.ino**) that you can adjust to fit your need:
 ```
-/***** U8g2 SSD1306 Library Setting *****/
-#define DISPLAY_I2C_ADDRESS 0x3C
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-/****************************************/
-
 /***** Tama Setting and Features *****/
-#define TAMA_DISPLAY_FRAMERATE  3   // 3 is optimal for Arduino UNO
-#define ENABLE_TAMA_SOUND
+#define TAMA_DISPLAY_FRAMERATE 3  // 3 is optimal for Arduino UNO
 #define ENABLE_AUTO_SAVE_STATUS
-#define AUTO_SAVE_MINUTES 60    // Auto save for every hour (to preserve EEPROM lifespan)
-#define ENABLE_LOAD_STATE_FROM_EEPROM 
-//#define ENABLE_DUMP_STATE_TO_SERIAL_WHEN_START
-//#define ENABLE_SERIAL_DEBUG_INPUT
-//#define ENABLE_LOAD_HARCODED_STATE_WHEN_START
-/***************************/
+#define AUTO_SAVE_MINUTES 60UL    // Auto save for every hour (to preserve EEPROM lifespan)
+// #define ENABLE_LOAD_STATE_FROM_EEPROM
+#define EEPROM_MAGIC_NUMBER 12
+/*************************************/
 ```
 
 ### Hardware

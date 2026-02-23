@@ -53,7 +53,7 @@
 #define AUTO_SAVE_MINUTES 60UL    // Auto save for every hour (to preserve EEPROM lifespan)
 // #define ENABLE_LOAD_STATE_FROM_EEPROM
 #define EEPROM_MAGIC_NUMBER 12
-/***************************/
+/*************************************/
 
 U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_R0);
 
