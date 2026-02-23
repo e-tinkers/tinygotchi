@@ -22,10 +22,10 @@
 
 #include "hal.h"
 
-#define MEMORY_SIZE        0x140 // MEM_RAM_SIZE + MEM_IO_SIZE
+#define MEMORY_SIZE           0x140 // MEM_RAM_SIZE + MEM_IO_SIZE
 
-#define MEM_RAM_ADDR        0x000
-#define MEM_RAM_SIZE        0x280
+#define MEM_RAM_ADDR          0x000
+#define MEM_RAM_SIZE          0x280
 
 #define MEM_DISPLAY1_ADDR     0xE00
 #define MEM_DISPLAY1_ADDR_OFS 0xB80
@@ -35,10 +35,10 @@
 #define MEM_DISPLAY2_ADDR_OFS 0xBB0
 #define MEM_DISPLAY2_SIZE     0x050
 
-#define MEM_IO_ADDR       0xF00
-//#define MEM_IO_ADDR_OFS   0xBE0
-#define MEM_IO_ADDR_OFS   0xF00
-#define MEM_IO_SIZE       0x080
+#define MEM_IO_ADDR           0xF00
+// #define MEM_IO_ADDR_OFS       0xBE0
+#define MEM_IO_ADDR_OFS       0xF00
+#define MEM_IO_SIZE           0x080
 
 typedef struct breakpoint {
   u13_t addr;
@@ -100,7 +100,6 @@ typedef enum {
   INT_SLOT_NUM,
 } int_slot_t;
 
-
 /*
 typedef struct {
   u13_t *pc;
@@ -124,7 +123,8 @@ typedef struct {
   interrupt_t *interrupts;
 
   u4_t *memory;
-} state_t; */
+} state_t;
+*/
 
 #ifdef __cplusplus
  extern "C" {
@@ -133,7 +133,7 @@ typedef struct {
 void cpu_add_bp(breakpoint_t **list, u13_t addr);
 void cpu_free_bp(breakpoint_t **list);
 
-//void cpu_set_speed(u8_t speed);
+// void cpu_set_speed(u8_t speed);
 
 void cpu_get_state(cpu_state_t *cpustate);
 void cpu_set_state(cpu_state_t *cpustate);
@@ -148,9 +148,9 @@ void cpu_refresh_hw(void);
 
 void cpu_reset(void);
 
-//u8_t cpu_get_max_number(void);
+// u8_t cpu_get_max_number(void);
 
-//bool_t cpu_init(breakpoint_t *breakpoints, u32_t freq);
+// bool_t cpu_init(breakpoint_t *breakpoints, u32_t freq);
 
 bool_t cpu_init(u32_t freq);
 void cpu_release(void);

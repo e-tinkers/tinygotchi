@@ -22,7 +22,7 @@
 #include "cpu.h"
 #include "hal.h"
 
-#define DEFAULT_FRAMERATE				3// fps
+#define DEFAULT_FRAMERATE				3 // fps
 
 static exec_mode_t exec_mode = EXEC_MODE_RUN;
 
@@ -40,15 +40,15 @@ hal_t *g_hal;
 bool_t tamalib_init(u32_t freq)
 //bool_t tamalib_init(breakpoint_t *breakpoints, u32_t freq)
 {
-	bool_t res = 0;
+  bool_t res = 0;
   res |= cpu_init( freq);
 
 //	res |= cpu_init(program, breakpoints, freq);
-	res |= hw_init();
+  res |= hw_init();
 
-	ts_freq = freq;
+  ts_freq = freq;
 
-	return res;
+  return res;
 }
 
 /*
@@ -56,31 +56,35 @@ void tamalib_release(void)
 {
 	hw_release();
 	cpu_release();
-}*/
+}
+*/
 
 
 void tamalib_set_framerate(u8_t framerate)
 {
-	g_framerate = framerate;
+  g_framerate = framerate;
 }
+
 /*
 u8_t tamalib_get_framerate(void)
 {
  
-	//return g_framerate;
+  // return g_framerate;
   return DEFAULT_FRAMERATE;
 }
 */
+
 void tamalib_register_hal(hal_t *hal)
 {
-	g_hal = hal;
+  g_hal = hal;
 }
+
 /*
 void tamalib_set_exec_mode(exec_mode_t mode)
 {
-	exec_mode = mode;
-	step_depth = cpu_get_depth();
-	cpu_sync_ref_timestamp();
+  exec_mode = mode;
+  step_depth = cpu_get_depth();
+  cpu_sync_ref_timestamp();
 }
 */
 
@@ -128,6 +132,7 @@ void tamalib_step(void)
 	} 
 }
 */
+
 /*
 void tamalib_mainloop(void)
 {
@@ -142,30 +147,31 @@ void tamalib_mainloop(void)
 			g_hal->update_screen();
 		}
 	}
-} */
+}
+*/
 
 void tamalib_mainloop_step_by_step(void)
 {
   timestamp_t ts;
 
   if (!g_hal->handler()) {
-    //tamalib_step();
+		//tamalib_step();
 
-    if (exec_mode == EXEC_MODE_RUN) {
-      if (cpu_step()) {
-        exec_mode = EXEC_MODE_PAUSE;
-        step_depth = cpu_get_depth();
-      }
-    }
+	if (exec_mode == EXEC_MODE_RUN) {
+		if (cpu_step()) {
+		exec_mode = EXEC_MODE_PAUSE;
+		step_depth = cpu_get_depth();
+		}
+	}
 
-
-    /* Update the screen @ g_framerate fps */
-    ts = g_hal->get_timestamp();
-    
-    if (ts - screen_ts >= ts_freq/g_framerate) {
-    //if (ts - screen_ts >= ts_freq/DEFAULT_FRAMERATE) {
-      screen_ts = ts;
-      g_hal->update_screen();
-    }
+	/* Update the screen @ g_framerate fps */
+	ts = g_hal->get_timestamp();
+		
+	if (ts - screen_ts >= ts_freq/g_framerate) {
+		//if (ts - screen_ts >= ts_freq/DEFAULT_FRAMERATE) {
+		screen_ts = ts;
+		g_hal->update_screen();
+	}
   }
+  
 }

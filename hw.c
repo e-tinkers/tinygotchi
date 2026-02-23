@@ -17,7 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-//#include <avr/pgmspace.h>
+
+// #include <avr/pgmspace.h>
 #include "hw.h"
 #include "cpu.h"
 #include "hal.h"
@@ -25,6 +26,8 @@
 /* SEG -> LCD mapping */
 const static u8_t seg_pos[40] = {0, 1, 2, 3, 4, 5, 6, 7, 32, 8, 9, 10, 11, 12 ,13 ,14, 15, 33, 34, 35, 31, 30, 29, 28, 27, 26, 25, 24, 36, 23, 22, 21, 20, 19, 18, 17, 16, 37, 38, 39};
 
+/* Buzzer frequency */
+const static uint16_t snd_freq[]= {4096, 3279, 2731, 2341, 2048, 1638, 1365, 1170};
 
 bool_t hw_init(void)
 {
@@ -82,10 +85,9 @@ void hw_set_button(button_t btn, btn_state_t state)
 	}
 }
 
-const static uint16_t snd_freq[]= {4096,3279,2731,2341,2048,1638,1365,1170};
 void hw_set_buzzer_freq(u4_t freq)
 {
-  if (freq>7) return;
+  if (freq > 7) return;
   g_hal->set_frequency(snd_freq[freq]);
 	/*u32_t snd_freq = 0;
 
