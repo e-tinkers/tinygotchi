@@ -28,10 +28,17 @@
 #include "hardcoded_state.h"
 
 /***** GPIO Pin Defition *****/
+#if (defined(__AVR_ATtiny3227__) || defined(__AVR_ATtiny3217__))
 #define PIN_LEFT PIN_PC3
 #define PIN_MIDDLE PIN_PC2
 #define PIN_RIGHT PIN_PC1
 #define PIN_BUZZ PIN_PA5
+#elif (defined (__AVR_ATmega328P__)) // original pin definitions in ArduinoGotchi
+#define PIN_LEFT 2
+#define PIN_MIDDLE 3
+#define PIN_RIGHT 4
+#define PIN_BUZZ 9
+#endif
 /*****************************/
 
 /***** U8g2 SSD1306 Library Setting *****/
@@ -44,7 +51,7 @@
 #define TAMA_DISPLAY_FRAMERATE 3  // 3 is optimal for Arduino UNO
 #define ENABLE_TAMA_SOUND
 #define ENABLE_AUTO_SAVE_STATUS
-#define AUTO_SAVE_MINUTES 60  // Auto save for every hour (to preserve EEPROM lifespan)
+#define AUTO_SAVE_MINUTES 60UL    // Auto save for every hour (to preserve EEPROM lifespan)
 #define ENABLE_LOAD_STATE_FROM_EEPROM
 //#define ENABLE_DUMP_STATE_TO_SERIAL_WHEN_START
 //#define ENABLE_SERIAL_DEBUG_INPUT
@@ -72,7 +79,7 @@ U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_MIRROR);
 /**** TamaLib Specific Variables ****/
 static uint16_t current_freq = 0;
 static bool_t matrix_buffer[LCD_HEIGHT][LCD_WIDTH / 8] = { { 0 } };
-static byte runOnceBool = 0;
+// static byte runOnceBool = 0;
 static bool_t icon_buffer[ICON_NUM] = { 0 };
 static cpu_state_t cpuState;
 static unsigned long lastSaveTimestamp = 0;
@@ -134,7 +141,7 @@ static void hal_play_frequency(bool_t en) {
 #endif
 }
 
-static bool_t button4state = 0;
+// static bool_t button4state = 0;
 
 static int hal_handler(void) {
 #ifdef ENABLE_SERIAL_DEBUG_INPUT
