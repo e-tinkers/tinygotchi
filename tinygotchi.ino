@@ -79,7 +79,6 @@ U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_MIRROR);
 /**** TamaLib Specific Variables ****/
 static uint16_t current_freq = 0;
 static bool_t matrix_buffer[LCD_HEIGHT][LCD_WIDTH / 8] = { { 0 } };
-// static byte runOnceBool = 0;
 static bool_t icon_buffer[ICON_NUM] = { 0 };
 static cpu_state_t cpuState;
 static unsigned long lastSaveTimestamp = 0;
@@ -141,8 +140,6 @@ static void hal_play_frequency(bool_t en) {
 #endif
 }
 
-// static bool_t button4state = 0;
-
 static int hal_handler(void) {
 #ifdef ENABLE_SERIAL_DEBUG_INPUT
   if (Serial.available() > 0) {
@@ -178,16 +175,6 @@ static int hal_handler(void) {
   } else {
     hw_set_button(BTN_RIGHT, BTN_STATE_RELEASED);
   }
-  // #ifdef ENABLE_AUTO_SAVE_STATUS
-  //   if (digitalRead(5) == HIGH) {
-  //     if (button4state==0) {
-  //       saveStateToEEPROM();
-  //     }
-  //     button4state = 1;
-  //   } else {
-  //     button4state = 0;
-  //   }
-  // #endif
 #endif
   return 0;
 }
@@ -301,15 +288,6 @@ void dumpStateToSerial() {
     if ((count % 16) == 15) Serial.println("");
   }
   Serial.println("};");
-  /*
-  Serial.println("");
-  Serial.println("static const uint8_t bitmaps[] PROGMEM = {");
-  for(i=0;i<144;i++) {
-    sprintf(tmp, "0x%02X,", bitmaps_raw[i]);
-    Serial.print(tmp);
-    if ((i % 18)==17) Serial.println("");
-  }
-  Serial.println("};");  */
 }
 #endif
 
@@ -364,17 +342,6 @@ void loadStateFromEEPROM() {
 }
 #endif
 
-
-uint8_t reverseBits(uint8_t num) {
-  uint8_t reverse_num = 0;
-  uint8_t i;
-  for (i = 0; i < 8; i++) {
-    if ((num & (1 << i)))
-      reverse_num |= 1 << ((8 - 1) - i);
-  }
-  return reverse_num;
-}
-
 void setup() {
   Serial.begin(115200);
   pinMode(PIN_LEFT, INPUT_PULLUP);
@@ -398,13 +365,6 @@ void setup() {
 #ifdef ENABLE_LOAD_HARCODED_STATE_WHEN_START
   loadHardcodedState();
 #endif
-
-  /*
-  int i;
-  for(i=0;i<(18*8);i++) {
-    bitmaps_raw[i]= reverseBits(bitmaps_raw[i]);
-  }
-*/
 
 #ifdef ENABLE_DUMP_STATE_TO_SERIAL_WHEN_START
   dumpStateToSerial();
