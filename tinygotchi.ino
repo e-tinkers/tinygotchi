@@ -52,7 +52,6 @@
 #define ENABLE_AUTO_SAVE_STATUS
 #define AUTO_SAVE_MINUTES 60UL    // Auto save for every hour (to preserve EEPROM lifespan)
 #define ENABLE_LOAD_STATE_FROM_EEPROM
-//#define ENABLE_SERIAL_DEBUG_INPUT
 /***************************/
 
 U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_R0);
@@ -120,25 +119,6 @@ static void hal_play_frequency(bool_t en) {
 }
 
 static int hal_handler(void) {
-#ifdef ENABLE_SERIAL_DEBUG_INPUT
-  if (Serial.available() > 0) {
-    char incomingByte = Serial.read();
-    Serial.println(incomingByte, DEC);
-    if (incomingByte == '1') {
-      hw_set_button(BTN_LEFT, BTN_STATE_PRESSED);
-    } else if (incomingByte == '2') {
-      hw_set_button(BTN_LEFT, BTN_STATE_RELEASED);
-    } else if (incomingByte == '3') {
-      hw_set_button(BTN_MIDDLE, BTN_STATE_PRESSED);
-    } else if (incomingByte == '4') {
-      hw_set_button(BTN_MIDDLE, BTN_STATE_RELEASED);
-    } else if (incomingByte == '5') {
-      hw_set_button(BTN_RIGHT, BTN_STATE_PRESSED);
-    } else if (incomingByte == '6') {
-      hw_set_button(BTN_RIGHT, BTN_STATE_RELEASED);
-    }
-  }
-#else
   if (digitalRead(PIN_LEFT) == LOW) {
     hw_set_button(BTN_LEFT, BTN_STATE_PRESSED);
   } else {
@@ -154,7 +134,7 @@ static int hal_handler(void) {
   } else {
     hw_set_button(BTN_RIGHT, BTN_STATE_RELEASED);
   }
-#endif
+
   return 0;
 }
 
