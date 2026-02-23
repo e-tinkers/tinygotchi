@@ -58,23 +58,7 @@
 //#define ENABLE_LOAD_HARCODED_STATE_WHEN_START
 /***************************/
 
-/***** Set display orientation, U8G2_MIRROR_VERTICAL is not supported *****/
-#define U8G2_LAYOUT_NORMAL
-//#define U8G2_LAYOUT_ROTATE_180
-//#define U8G2_LAYOUT_MIRROR
-/**************************************************************************/
-
-#ifdef U8G2_LAYOUT_NORMAL
 U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_R0);
-#endif
-
-#ifdef U8G2_LAYOUT_ROTATE_180
-U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_R2);
-#endif
-
-#ifdef U8G2_LAYOUT_MIRROR
-U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_MIRROR);
-#endif
 
 /**** TamaLib Specific Variables ****/
 static uint16_t current_freq = 0;
@@ -193,7 +177,6 @@ static hal_t hal = {
 };
 
 void drawTriangle(uint8_t x, uint8_t y) {
-  //display.drawLine(x,y,x+6,y);
   display.drawLine(x + 1, y + 1, x + 5, y + 1);
   display.drawLine(x + 2, y + 2, x + 4, y + 2);
   display.drawLine(x + 3, y + 3, x + 3, y + 3);
@@ -224,34 +207,9 @@ void drawTamaSelection(uint8_t y) {
 
 void displayTama() {
   uint8_t j;
+  
   display.firstPage();
-#ifdef U8G2_LAYOUT_ROTATE_180
-  drawTamaSelection(49);
-  display.nextPage();
 
-  for (j = 11; j < LCD_HEIGHT; j++) {
-    drawTamaRow(j, j + j + j, 2);
-  }
-  display.nextPage();
-
-  for (j = 5; j <= 10; j++) {
-    if (j == 5) {
-      drawTamaRow(j, j + j + j + 1, 1);
-    } else {
-      drawTamaRow(j, j + j + j, 2);
-    }
-  }
-  display.nextPage();
-
-  for (j = 0; j <= 5; j++) {
-    if (j == 5) {
-      drawTamaRow(j, j + j + j, 1);
-    } else {
-      drawTamaRow(j, j + j + j, 2);
-    }
-  }
-  display.nextPage();
-#else
   for (j = 0; j < LCD_HEIGHT; j++) {
     if (j != 5) drawTamaRow(j, j + j + j, 2);
     if (j == 5) {
@@ -264,7 +222,7 @@ void displayTama() {
   display.nextPage();
   drawTamaSelection(49);
   display.nextPage();
-#endif
+
 }
 
 #ifdef ENABLE_DUMP_STATE_TO_SERIAL_WHEN_START
