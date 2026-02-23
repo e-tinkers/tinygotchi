@@ -49,11 +49,9 @@
 
 /***** Tama Setting and Features *****/
 #define TAMA_DISPLAY_FRAMERATE 3  // 3 is optimal for Arduino UNO
-#define ENABLE_TAMA_SOUND
 #define ENABLE_AUTO_SAVE_STATUS
 #define AUTO_SAVE_MINUTES 60UL    // Auto save for every hour (to preserve EEPROM lifespan)
 #define ENABLE_LOAD_STATE_FROM_EEPROM
-//#define ENABLE_DUMP_STATE_TO_SERIAL_WHEN_START
 //#define ENABLE_SERIAL_DEBUG_INPUT
 //#define ENABLE_LOAD_HARCODED_STATE_WHEN_START
 /***************************/
@@ -115,13 +113,11 @@ static void hal_set_frequency(u32_t freq) {
 }
 
 static void hal_play_frequency(bool_t en) {
-#ifdef ENABLE_TAMA_SOUND
   if (en) {
     tone(PIN_BUZZ, current_freq);
   } else {
     noTone(PIN_BUZZ);
   }
-#endif
 }
 
 static int hal_handler(void) {
@@ -207,7 +203,7 @@ void drawTamaSelection(uint8_t y) {
 
 void displayTama() {
   uint8_t j;
-  
+
   display.firstPage();
 
   for (j = 0; j < LCD_HEIGHT; j++) {
@@ -224,30 +220,6 @@ void displayTama() {
   display.nextPage();
 
 }
-
-#ifdef ENABLE_DUMP_STATE_TO_SERIAL_WHEN_START
-void dumpStateToSerial() {
-  uint16_t i, count = 0;
-  char tmp[10];
-  cpu_get_state(&cpuState);
-  u4_t *memTemp = cpuState.memory;
-  uint8_t *cpuS = (uint8_t *)&cpuState;
-
-  Serial.println("");
-  Serial.println("static const uint8_t hardcodedState[] PROGMEM = {");
-  for (i = 0; i < sizeof(cpu_state_t); i++, count++) {
-    sprintf(tmp, "0x%02X,", cpuS[i]);
-    Serial.print(tmp);
-    if ((count % 16) == 15) Serial.println("");
-  }
-  for (i = 0; i < MEMORY_SIZE; i++, count++) {
-    sprintf(tmp, "0x%02X,", memTemp[i]);
-    Serial.print(tmp);
-    if ((count % 16) == 15) Serial.println("");
-  }
-  Serial.println("};");
-}
-#endif
 
 #ifdef ENABLE_LOAD_HARCODED_STATE_WHEN_START
 void loadHardcodedState() {
@@ -324,9 +296,6 @@ void setup() {
   loadHardcodedState();
 #endif
 
-#ifdef ENABLE_DUMP_STATE_TO_SERIAL_WHEN_START
-  dumpStateToSerial();
-#endif
 }
 
 void loop() {
