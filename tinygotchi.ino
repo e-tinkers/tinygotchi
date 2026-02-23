@@ -53,7 +53,6 @@
 #define AUTO_SAVE_MINUTES 60UL    // Auto save for every hour (to preserve EEPROM lifespan)
 #define ENABLE_LOAD_STATE_FROM_EEPROM
 //#define ENABLE_SERIAL_DEBUG_INPUT
-//#define ENABLE_LOAD_HARCODED_STATE_WHEN_START
 /***************************/
 
 U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_R0);
@@ -221,24 +220,6 @@ void displayTama() {
 
 }
 
-#ifdef ENABLE_LOAD_HARCODED_STATE_WHEN_START
-void loadHardcodedState() {
-  cpu_get_state(&cpuState);
-  u4_t *memTemp = cpuState.memory;
-  uint16_t i;
-  uint8_t *cpuS = (uint8_t *)&cpuState;
-  for (i = 0; i < sizeof(cpu_state_t); i++) {
-    cpuS[i] = pgm_read_byte_near(hardcodedState + i);
-  }
-  for (i = 0; i < MEMORY_SIZE; i++) {
-    memTemp[i] = pgm_read_byte_near(hardcodedState + sizeof(cpu_state_t) + i);
-  }
-  cpuState.memory = memTemp;
-  cpu_set_state(&cpuState);
-  Serial.println("Hardcoded");
-}
-#endif
-
 #ifdef ENABLE_AUTO_SAVE_STATUS
 void saveStateToEEPROM() {
   int i = 0;
@@ -290,10 +271,6 @@ void setup() {
   if (EEPROM.read(0) == 12) {
     loadStateFromEEPROM();
   }
-#endif
-
-#ifdef ENABLE_LOAD_HARCODED_STATE_WHEN_START
-  loadHardcodedState();
 #endif
 
 }
