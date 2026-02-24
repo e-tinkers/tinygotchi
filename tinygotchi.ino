@@ -52,6 +52,7 @@
 #define ENABLE_AUTO_SAVE_STATUS
 #define AUTO_SAVE_MINUTES 60UL    // Auto save for every hour (to preserve EEPROM lifespan)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ENABLE_LOAD_STATE_FROM_EEPROM
 /***************************/
 =======
@@ -66,6 +67,23 @@ U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_R0);
 static uint16_t current_freq = 0;
 static bool_t matrix_buffer[LCD_HEIGHT][LCD_WIDTH / 8] = { { 0 } };
 static bool_t icon_buffer[ICON_NUM] = { 0 };
+=======
+// #define ENABLE_LOAD_STATE_FROM_EEPROM
+#define EEPROM_MAGIC_NUMBER 12
+/*************************************/
+
+/***** Display Constants *****/
+#define MENU_ROW 49
+#define MENU_PADDING 4
+#define ICON_PADDING 3
+
+U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_R0);
+
+/**** TamaLib Specific Variables ****/
+static uint16_t current_freq = 0;                                    // select buzz freq of {4096, 3279, 2731, 2341, 2048, 1638, 1365, 1170};
+static bool_t matrix_buffer[LCD_HEIGHT][LCD_WIDTH / 8] = { { 0 } };  // 32 x (16/8) = 64 of original Tamagochi display buffer
+static bool_t icon_buffer[ICON_NUM] = { 0 };                         // an array hold the state of which of the 8 icons is selected
+>>>>>>> refactor
 static cpu_state_t cpuState;
 static unsigned long lastSaveTimestamp = 0;
 /************************************/
@@ -76,7 +94,11 @@ static void hal_halt(void) {
 
 static void hal_log(log_level_t level, char *buff, ...) {
 <<<<<<< HEAD
+<<<<<<< HEAD
   Serial.println(buff);
+=======
+  // Serial.println(buff);
+>>>>>>> refactor
 =======
   // Serial.println(buff);
 >>>>>>> refactor
@@ -168,8 +190,7 @@ void drawTriangle(uint8_t x, uint8_t y) {
 }
 
 void drawTamaRow(uint8_t tamaLCD_y, uint8_t ActualLCD_y, uint8_t thick) {
-  uint8_t i;
-  for (i = 0; i < LCD_WIDTH; i++) {
+  for (uint8_t i = 0; i < LCD_WIDTH; i++) {
     uint8_t mask = 0b10000000;
     mask = mask >> (i % 8);
     if ((matrix_buffer[tamaLCD_y][i / 8] & mask) != 0) {
@@ -178,6 +199,7 @@ void drawTamaRow(uint8_t tamaLCD_y, uint8_t ActualLCD_y, uint8_t thick) {
   }
 }
 
+<<<<<<< HEAD
 void drawTamaSelection(uint8_t y) {
   uint8_t i;
   for (i = 0; i < 7; i++) {
@@ -196,6 +218,21 @@ void displayTama() {
   display.firstPage();
 
   for (j = 0; j < LCD_HEIGHT; j++) {
+=======
+void drawTamaSelection() {
+  for (uint8_t icon = 0; icon <= 7; icon++) {
+    if (icon_buffer[icon])
+      drawTriangle(icon * 16 + MENU_PADDING, MENU_ROW);
+    display.drawXBMP(icon * 16 + ICON_PADDING, MENU_ROW + 6, 16, 9, bitmaps + icon * 18);
+  }
+}
+
+void displayTama() {
+
+  display.firstPage();
+
+  for (uint8_t j = 0; j < LCD_HEIGHT; j++) {
+>>>>>>> refactor
     if (j != 5) drawTamaRow(j, j + j + j, 2);
     if (j == 5) {
       drawTamaRow(j, j + j + j, 1);
@@ -205,13 +242,18 @@ void displayTama() {
     if (j == 10) display.nextPage();
   }
   display.nextPage();
+<<<<<<< HEAD
   drawTamaSelection(49);
+=======
+  drawTamaSelection();
+>>>>>>> refactor
   display.nextPage();
 
 }
 
 #ifdef ENABLE_AUTO_SAVE_STATUS
 void saveStateToEEPROM() {
+<<<<<<< HEAD
   int i = 0;
 <<<<<<< HEAD
   if (EEPROM.read(0) != 12) {
@@ -220,13 +262,22 @@ void saveStateToEEPROM() {
 >>>>>>> refactor
     // Clear EEPROM
     for (i = 0; i < EEPROM.length(); i++) {
+=======
+  if (EEPROM.read(0) != EEPROM_MAGIC_NUMBER) {
+    // Clear EEPROM
+    for (int i = 0; i < EEPROM.length(); i++) {
+>>>>>>> refactor
       EEPROM.write(i, 0);
     }
   }
   EEPROM.update(0, EEPROM_MAGIC_NUMBER);
   cpu_get_state(&cpuState);
   EEPROM.put(1, cpuState);
+<<<<<<< HEAD
   for (i = 0; i < MEMORY_SIZE; i++) {
+=======
+  for (int i = 0; i < MEMORY_SIZE; i++) {
+>>>>>>> refactor
     EEPROM.update(1 + sizeof(cpu_state_t) + i, cpuState.memory[i]);
   }
   // Serial.println("S");
@@ -239,8 +290,12 @@ void loadStateFromEEPROM() {
   u4_t *memTemp = cpuState.memory;
   EEPROM.get(1, cpuState);
   cpu_set_state(&cpuState);
+<<<<<<< HEAD
   int i = 0;
   for (i = 0; i < MEMORY_SIZE; i++) {
+=======
+  for (int i = 0; i < MEMORY_SIZE; i++) {
+>>>>>>> refactor
     memTemp[i] = EEPROM.read(1 + sizeof(cpu_state_t) + i);
   }
   // Serial.println("L");
@@ -249,7 +304,12 @@ void loadStateFromEEPROM() {
 
 void setup() {
 <<<<<<< HEAD
+<<<<<<< HEAD
   Serial.begin(115200);
+=======
+  // Serial.begin(115200);
+
+>>>>>>> refactor
 =======
   // Serial.begin(115200);
 
@@ -268,7 +328,11 @@ void setup() {
 
 #ifdef ENABLE_LOAD_STATE_FROM_EEPROM
 <<<<<<< HEAD
+<<<<<<< HEAD
   if (EEPROM.read(0) == 12) {
+=======
+  if (EEPROM.read(0) == EEPROM_MAGIC_NUMBER) {
+>>>>>>> refactor
 =======
   if (EEPROM.read(0) == EEPROM_MAGIC_NUMBER) {
 >>>>>>> refactor
