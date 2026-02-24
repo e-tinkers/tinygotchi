@@ -55,12 +55,17 @@
 #define EEPROM_MAGIC_NUMBER 12
 /*************************************/
 
+/***** Display Constants *****/
+#define MENU_ROW 49
+#define MENU_PADDING 4
+#define ICON_PADDING 3
+
 U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_R0);
 
 /**** TamaLib Specific Variables ****/
-static uint16_t current_freq = 0;
-static bool_t matrix_buffer[LCD_HEIGHT][LCD_WIDTH / 8] = { { 0 } };
-static bool_t icon_buffer[ICON_NUM] = { 0 };
+static uint16_t current_freq = 0;                                    // select buzz freq of {4096, 3279, 2731, 2341, 2048, 1638, 1365, 1170};
+static bool_t matrix_buffer[LCD_HEIGHT][LCD_WIDTH / 8] = { { 0 } };  // 32 x (16/8) = 64 of original Tamagochi display buffer
+static bool_t icon_buffer[ICON_NUM] = { 0 };                         // an array hold the state of which of the 8 icons is selected
 static cpu_state_t cpuState;
 static unsigned long lastSaveTimestamp = 0;
 /************************************/
@@ -159,8 +164,7 @@ void drawTriangle(uint8_t x, uint8_t y) {
 }
 
 void drawTamaRow(uint8_t tamaLCD_y, uint8_t ActualLCD_y, uint8_t thick) {
-  uint8_t i;
-  for (i = 0; i < LCD_WIDTH; i++) {
+  for (uint8_t i = 0; i < LCD_WIDTH; i++) {
     uint8_t mask = 0b10000000;
     mask = mask >> (i % 8);
     if ((matrix_buffer[tamaLCD_y][i / 8] & mask) != 0) {
@@ -169,24 +173,19 @@ void drawTamaRow(uint8_t tamaLCD_y, uint8_t ActualLCD_y, uint8_t thick) {
   }
 }
 
-void drawTamaSelection(uint8_t y) {
-  uint8_t i;
-  for (i = 0; i < 7; i++) {
-    if (icon_buffer[i]) drawTriangle(i * 16 + 5, y);
-    display.drawXBMP(i * 16 + 4, y + 6, 16, 9, bitmaps + i * 18);
-  }
-  if (icon_buffer[7]) {
-    drawTriangle(7 * 16 + 5, y);
-    display.drawXBMP(7 * 16 + 4, y + 6, 16, 9, bitmaps + 7 * 18);
+void drawTamaSelection() {
+  for (uint8_t icon = 0; icon <= 7; icon++) {
+    if (icon_buffer[icon])
+      drawTriangle(icon * 16 + MENU_PADDING, MENU_ROW);
+    display.drawXBMP(icon * 16 + ICON_PADDING, MENU_ROW + 6, 16, 9, bitmaps + icon * 18);
   }
 }
 
 void displayTama() {
-  uint8_t j;
 
   display.firstPage();
 
-  for (j = 0; j < LCD_HEIGHT; j++) {
+  for (uint8_t j = 0; j < LCD_HEIGHT; j++) {
     if (j != 5) drawTamaRow(j, j + j + j, 2);
     if (j == 5) {
       drawTamaRow(j, j + j + j, 1);
@@ -196,24 +195,23 @@ void displayTama() {
     if (j == 10) display.nextPage();
   }
   display.nextPage();
-  drawTamaSelection(49);
+  drawTamaSelection();
   display.nextPage();
 
 }
 
 #ifdef ENABLE_AUTO_SAVE_STATUS
 void saveStateToEEPROM() {
-  int i = 0;
   if (EEPROM.read(0) != EEPROM_MAGIC_NUMBER) {
     // Clear EEPROM
-    for (i = 0; i < EEPROM.length(); i++) {
+    for (int i = 0; i < EEPROM.length(); i++) {
       EEPROM.write(i, 0);
     }
   }
   EEPROM.update(0, EEPROM_MAGIC_NUMBER);
   cpu_get_state(&cpuState);
   EEPROM.put(1, cpuState);
-  for (i = 0; i < MEMORY_SIZE; i++) {
+  for (int i = 0; i < MEMORY_SIZE; i++) {
     EEPROM.update(1 + sizeof(cpu_state_t) + i, cpuState.memory[i]);
   }
   // Serial.println("S");
@@ -226,8 +224,7 @@ void loadStateFromEEPROM() {
   u4_t *memTemp = cpuState.memory;
   EEPROM.get(1, cpuState);
   cpu_set_state(&cpuState);
-  int i = 0;
-  for (i = 0; i < MEMORY_SIZE; i++) {
+  for (int i = 0; i < MEMORY_SIZE; i++) {
     memTemp[i] = EEPROM.read(1 + sizeof(cpu_state_t) + i);
   }
   // Serial.println("L");
