@@ -24,7 +24,6 @@
 #include <EEPROM.h>
 #include "tamalib.h"
 #include "hw.h"
-#include "bitmaps.h"
 #include "hardcoded_state.h"
 
 /***** GPIO Pin Defition *****/
@@ -56,9 +55,22 @@
 /*************************************/
 
 /***** Display Constants *****/
-#define MENU_ROW 49
-#define MENU_PADDING 4
-#define ICON_PADDING 3
+#define SELECT_ROW 49
+#define ICON_ROW 55
+#define SELECT_PADDING 4
+#define ICON_NUM 8
+#define ICON_SIZE 8
+
+const uint8_t icons[ICON_NUM][ICON_SIZE] = {
+    {0x95, 0xd5, 0xff, 0xee, 0xe4, 0x84, 0x84, 0x84}, // fork and knief
+    {0x18, 0x42, 0x18, 0xa5, 0xa5, 0x18, 0x42, 0x18}, // sun
+    {0x62, 0xf5, 0xf2, 0x78, 0x1c, 0x0e, 0x07, 0x03}, // baseball
+    {0x38, 0x70, 0xf8, 0xec, 0xb4, 0x1c, 0x0a, 0x01}, // syringer
+    {0x0c, 0xca, 0xba, 0xc1, 0xd0, 0x82, 0xc6, 0x7c}, // duck
+    {0x00, 0x7e, 0x81, 0xd5, 0xd5, 0x8a, 0x52, 0x3c}, // scale
+    {0x00, 0x40, 0xa0, 0xae, 0xa7, 0x57, 0x07, 0x0e}, // pacman
+    {0x00, 0x0e, 0x31, 0x7b, 0xad, 0xde, 0x88, 0x70}, //
+};
 
 U8G2_SSD1306_128X64_NONAME_2_HW_I2C display(U8G2_R0);
 
@@ -176,8 +188,9 @@ void drawTamaRow(uint8_t tamaLCD_y, uint8_t ActualLCD_y, uint8_t thick) {
 void drawTamaSelection() {
   for (uint8_t icon = 0; icon <= 7; icon++) {
     if (icon_buffer[icon])
-      drawTriangle(icon * 16 + MENU_PADDING, MENU_ROW);
-    display.drawXBMP(icon * 16 + ICON_PADDING, MENU_ROW + 6, 16, 9, bitmaps + icon * 18);
+      drawTriangle(icon * 16 + SELECT_PADDING, SELECT_ROW);
+    // display.drawXBMP(icon * 16 + ICON_PADDING, MENU_ROW + 6, 16, 9, bitmaps + icon * 18);
+    display.drawXBMP(icon * 16, ICON_ROW, ICON_SIZE, ICON_SIZE, icons[icon]);
   }
 }
 

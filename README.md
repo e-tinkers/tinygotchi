@@ -1,8 +1,8 @@
-# tinyGotchi - A real Tamagotchi emulator for ATtiny3227
+# tinygotchi - A real Tamagotchi emulator for ATtiny3227
 
 ## Synopsis
 
-**tinyGotchi** is based on [ArduinoGotchi](https://github.com/GaryZ88/ArduinoGotchi) created by Gary Kwok and modified/optimized to run on an ATtiny3227. **ArduinoGotchi** itself is a real [Tamagotchi P1](https://tamagotchi.fandom.com/wiki/Tamagotchi_(1996_Pet)) emulator running in Arduino UNO hardware. The emulation core is based on [TamaLib](https://github.com/jcrona/tamalib) with intensive optimization to make it fit into UNO's hardware that only comes with 32K Flash 2K RAM.
+**tinygotchi** is based on [ArduinoGotchi](https://github.com/GaryZ88/ArduinoGotchi) created by Gary Kwok and modified/optimized to run on an ATtiny3227. **ArduinoGotchi** itself is a real [Tamagotchi P1](https://tamagotchi.fandom.com/wiki/Tamagotchi_(1996_Pet)) emulator running in Arduino UNO hardware. The emulation core is based on [TamaLib](https://github.com/jcrona/tamalib) with intensive optimization to make it fit into UNO's hardware that only comes with 32K Flash 2K RAM.
 
 ![Tamagotchi P1 Actual Devices](../main/images/TamaP1_devices.jpg)
 
@@ -10,6 +10,7 @@
 The repo adds a few changes and improvements over the original repo [GaryZ88/ArduinoGotchi](https://github.com/GaryZ88/ArduinoGotchi):
 - `TamaRomConvert` is removed from the repo, `rom_12bit.h` is obtained from another fork [analolyc/Tamagotchi](https://github.com/anabolyc/Tamagotchi).
 - [Remove several option Macros](https://github.com/e-tinkers/tinygotchi/commit/3e8c0d33c18567a59c36022a13324c0c2b89b3e8) and related codes to simplify the setup and reduce the unnecessary codes
+- Remove bitmaps.h and replace tamagotchi icons to resemble the original icons.
 
 ## How to build
 
@@ -29,8 +30,8 @@ The repo adds a few changes and improvements over the original repo [GaryZ88/Ard
 ### Compile and Run 
 - Compose the electronic parts, please follow the circult diagram in hardware folder
 - Launch Arduino IDE
-- Open "tinyGotchi.ino" in the project folder
-- Connect your tinyGotchi to with either via USB type-c port or 3.7V LiPo battery
+- Open "tinygotchi.ino" in the project folder
+- Connect your tinygotchi to with either via USB type-c port or 3.7V LiPo battery
 - Connect SerialUPDI programmer
 - Select your board
   - Main Menu -> Tools -> Board -> megaTinyCore -> ATtiny3227/...
@@ -46,7 +47,7 @@ The repo adds a few changes and improvements over the original repo [GaryZ88/Ard
 ### Additional notes
 - To activate your pet, you have to configure the clock by pressing the middle button. Otherwise, your pet will not alive.
 - The emulator will save the game status for every x mintues configured by `#define AUTO_SAVE_MINUTES x`.
-- There are a few settings in the main program (**tinyGotchi.ino**) that you can adjust to fit your need:
+- There are a few settings in the main program (**tinygotchi.ino**) that you can adjust to fit your need:
 ```
 /***** Tama Setting and Features *****/
 #define TAMA_DISPLAY_FRAMERATE 3  // 3 is optimal for Arduino UNO
@@ -61,4 +62,4 @@ The repo adds a few changes and improvements over the original repo [GaryZ88/Ard
 to be updated
 
 ### License
-ArduinoGotchi is distributed under the GPLv2 license. See the LICENSE file for more information.
+tinygotchi license follows ArduinoGotchi which is distributed under the GPLv2 license. See the LICENSE file for more information.
