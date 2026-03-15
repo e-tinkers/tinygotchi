@@ -74,7 +74,6 @@ static bool_t icon_buffer[ICON_NUM] = { 0 };
 /***** Display Constants *****/
 #define SELECT_ROW 49
 #define ICON_ROW 55
-#define SELECT_PADDING 4
 #define ICON_NUM 8
 #define ICON_SIZE 8
 
@@ -233,10 +232,9 @@ void displayTama() {
 =======
 void drawTamaSelection() {
   for (uint8_t icon = 0; icon <= 7; icon++) {
-    if (icon_buffer[icon])
-      drawTriangle(icon * 16 + SELECT_PADDING, SELECT_ROW);
-    // display.drawXBMP(icon * 16 + ICON_PADDING, MENU_ROW + 6, 16, 9, bitmaps + icon * 18);
     display.drawXBMP(icon * 16, ICON_ROW, ICON_SIZE, ICON_SIZE, icons[icon]);
+    if (icon_buffer[icon])
+      drawTriangle(icon * 16, SELECT_ROW);
   }
 }
 
